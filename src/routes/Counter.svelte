@@ -38,7 +38,7 @@
 	</button>
 </div>
 
-<style>
+<style lang="scss">
 	.counter {
 		display: flex;
 		border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -56,6 +56,7 @@
 		background-color: transparent;
 		touch-action: manipulation;
 		font-size: 2rem;
+		@include border-radius(10px); 
 	}
 
 	.counter button:hover {
