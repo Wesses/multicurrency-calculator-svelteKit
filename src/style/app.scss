@@ -1,5 +1,3 @@
-@import './mixins.scss';
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -8,4 +6,9 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
 }
