@@ -1,51 +1,64 @@
 <script>
+	// @ts-nocheck
+
 	export let ownValue;
 	export let ownCurrency;
 	export let modifiedValue;
 	export let modifiedCurrency;
 	export let rates;
+	export let rightSelect;
 
-	import { onDestroy } from 'svelte';
-
-  const getExchangeRate = (currency, exchangeRates) => {
+	const getExchangeRate = (currency, exchangeRates) => {
 		return exchangeRates.find((exchangeRate) => currency === exchangeRate.cc).rate;
 	};
 
-  const ownValueUnsubscribe = ownValue.subscribe((value) => {
-    const ownRate = getExchangeRate($ownCurrency, rates);
+	const getNewValue = (rightSelect = false) => {
+		const ownRate = getExchangeRate($ownCurrency, rates);
 		const modifiedRate = getExchangeRate($modifiedCurrency, rates);
-    const newValue = (value * ownRate) / modifiedRate;
 
-    if (newValue === $modifiedValue) {
-      return;
-    }
+		if (rightSelect) {
+			return ($ownValue * modifiedRate) / ownRate;
+		}
+
+		return ($ownValue * ownRate) / modifiedRate;
+	};
+
+	const calculateNewValueHandler = () => {
+		const newValue = getNewValue();
 
 		modifiedValue.set(newValue);
-	});
+	};
 
-  const ownCurrencyUnsubscribe = ownCurrency.subscribe((currency) => {
-		const ownRate = getExchangeRate(currency, rates);
-		const modifiedRate = getExchangeRate($modifiedCurrency, rates);
-    const newValue = ($ownValue * ownRate) / modifiedRate;
+	const selectCurrencyHandler = (event) => {
+		ownCurrency.set(event.target.value);
 
-    if (newValue === $modifiedValue) {
-      return;
-    }
+		if (rightSelect) {
+			const newValue = getNewValue(rightSelect);
 
-		modifiedValue.set(newValue);
-	});
+			ownValue.set(newValue);
 
-	onDestroy(ownCurrencyUnsubscribe);
-	onDestroy(ownValueUnsubscribe);
+			return;
+		}
+
+		calculateNewValueHandler();
+	};
 </script>
 
 <section class="calculator__section">
-	<input type="number" class="currency-input" placeholder="Введіть суму" bind:value={$ownValue} />
+	<input
+		type="number"
+		class="currency-input"
+		placeholder="Введіть суму"
+		min="0"
+		bind:value={$ownValue}
+		on:keyup={calculateNewValueHandler}
+		on:wheel={calculateNewValueHandler}
+	/>
 
 	<div>
 		<input type="text" class="searchInput" placeholder="Search..." />
 
-		<select class="selectList" on:change={(e) => ownCurrency.set(e.target.value)}>
+		<select class="selectList" on:change={selectCurrencyHandler}>
 			{#each rates as { txt, cc }}
 				<option value={cc} selected={cc === $ownCurrency}>
 					{txt}

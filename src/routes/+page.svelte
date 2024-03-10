@@ -13,6 +13,7 @@
 		modifiedValue={rightValue}
 		modifiedCurrency={rightCurrency}
 		rates={data.rates}
+		rightSelect={false}
 	/>
 	<CalculatorSection
 		ownValue={rightValue}
@@ -20,6 +21,7 @@
 		modifiedValue={leftValue}
 		modifiedCurrency={leftCurrency}
 		rates={data.rates}
+		rightSelect={true}
 	/>
 </div>
 
@@ -27,5 +29,10 @@
 	.calculator {
 		display: flex;
 		justify-content: space-evenly;
+
+		margin: 50px;
+		border: 1px black solid;
+		box-sizing: border-box;
+		padding: 30px;
 	}
 </style>
